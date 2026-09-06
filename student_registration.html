@@ -1,394 +1,1016 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Registration — VCN — Academic Enrollment</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --blue: #2563eb; --blue-light: #eff6ff;
-    --red: #dc2626; --green: #16a34a; --green-light: #f0fdf4;
-    --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
-    --gray-500: #6b7280; --gray-700: #374151; --gray-900: #111827;
-    --radius: 8px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
-  }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; padding: 2rem 1rem; }
-  .page-wrap { max-width: 760px; margin: 0 auto; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration — VCN — Academic Enrollment</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .page-header { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
-  .inst-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
-  .inst-icon { width: 44px; height: 44px; background: var(--blue-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-  .inst-icon svg { width: 24px; height: 24px; stroke: var(--blue); fill: none; stroke-width: 1.8; }
-  .inst-name { font-size: 15px; font-weight: 600; color: var(--gray-900); }
-  .inst-sub  { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
-  h1 { font-size: 24px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
-  .page-desc { font-size: 14px; color: var(--gray-500); }
-  .req-note  { font-size: 13px; color: var(--gray-500); margin-top: 8px; }
-  .req-note span { color: var(--red); }
+    :root {
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --red: #dc2626;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
 
-  .section-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
-  .section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
-  .section-num { width: 26px; height: 26px; background: var(--blue); color: #fff; border-radius: 50%; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .section-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-  .full { grid-column: 1 / -1; }
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
 
-  .field { display: flex; flex-direction: column; gap: 5px; }
-  label { font-size: 13px; font-weight: 500; color: var(--gray-700); }
-  label .req { color: var(--red); margin-left: 2px; }
+    /* ── Particle Header ── */
+    .vcn-header {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
 
-  input, select {
-    font-family: inherit; font-size: 14px; color: var(--gray-900);
-    background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius);
-    padding: 0 12px; height: 40px; width: 100%; outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
-  input.invalid, select.invalid { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
-  select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
-  }
+    #particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-  .phone-row { display: flex; align-items: center; }
-  .phone-prefix { font-size: 14px; font-weight: 500; color: var(--gray-700); background: var(--gray-100); border: 1.5px solid var(--gray-200); border-right: none; border-radius: var(--radius) 0 0 var(--radius); padding: 0 12px; height: 40px; display: flex; align-items: center; white-space: nowrap; }
-  .phone-row input { border-radius: 0 var(--radius) var(--radius) 0; flex: 1; }
+    .vcn-content {
+      position: relative;
+      z-index: 2;
+      padding: 2.5rem 2rem;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-  /* Address */
-  .addr-section-title { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; margin-top: 4px; }
-  .addr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
-  .addr-grid:last-child { margin-bottom: 0; }
-  .addr-field { display: flex; flex-direction: column; gap: 4px; }
-  .addr-row { display: flex; align-items: center; }
-  .addr-label { font-size: 13px; font-weight: 600; color: var(--gray-700); background: var(--gray-100); border: 1.5px solid var(--gray-200); border-right: none; border-radius: var(--radius) 0 0 var(--radius); padding: 0 10px; height: 40px; display: flex; align-items: center; white-space: nowrap; min-width: 72px; }
-  .addr-row input { border-radius: 0 var(--radius) var(--radius) 0; flex: 1; }
+    .vcn-top-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 1.5rem;
+    }
 
-  .field-error { font-size: 12px; color: var(--red); margin-top: 2px; display: none; }
-  .field-error.show { display: block; }
+    .vcn-logo-box {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-  .submit-bar { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 1.25rem 2rem; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .submit-note { font-size: 13px; color: var(--gray-500); }
-  .btn-submit { background: var(--blue); color: #fff; border: none; border-radius: var(--radius); padding: 0 24px; height: 42px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; transition: background 0.15s, transform 0.1s; }
-  .btn-submit:hover { background: #1d4ed8; }
-  .btn-submit:active { transform: scale(0.98); }
-  .btn-submit svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+    .vcn-logo-box svg {
+      width: 26px;
+      height: 26px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 1.7;
+    }
 
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: #fff; border-radius: 14px; padding: 2rem; max-width: 520px; width: 100%; box-shadow: var(--shadow-lg); animation: pop 0.2s ease; max-height: 90vh; overflow-y: auto; }
-  @keyframes pop { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .modal-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-  .modal-icon.warn { background: #fef3c7; }
-  .modal-icon.warn svg { stroke: #d97706; }
-  .modal-icon.success { background: var(--green-light); }
-  .modal-icon.success svg { stroke: var(--green); }
-  .modal-icon svg { width: 26px; height: 26px; fill: none; stroke-width: 2; }
-  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--gray-900); }
-  .modal p  { font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-bottom: 1.25rem; }
-  .modal-fields { margin-bottom: 1.25rem; }
-  .check-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
-  .check-row:last-child { border-bottom: none; }
-  .check-icon { flex-shrink: 0; margin-top: 1px; }
-  .check-icon svg { width: 16px; height: 16px; fill: none; stroke-width: 2.5; }
-  .check-icon.ok svg { stroke: var(--green); }
-  .check-label { color: var(--gray-700); }
-  .check-value { color: var(--gray-900); font-weight: 500; }
-  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
-  .btn-cancel { background: var(--gray-100); color: var(--gray-700); border: none; border-radius: var(--radius); padding: 0 18px; height: 38px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
-  .btn-cancel:hover { background: var(--gray-200); }
-  .btn-confirm { background: var(--green); color: #fff; border: none; border-radius: var(--radius); padding: 0 20px; height: 38px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; transition: background 0.15s; }
-  .btn-confirm:hover { background: #15803d; }
-  .btn-confirm svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; }
+    .vcn-inst-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
 
-  @media (max-width: 580px) {
-    body { padding: 1rem 0.75rem; }
-    .section-card, .page-header, .submit-bar { padding: 1.25rem; }
-    .grid-2, .grid-3, .addr-grid { grid-template-columns: 1fr; }
-    .full { grid-column: 1; }
-    .submit-bar { flex-direction: column; align-items: stretch; }
-    .btn-submit { justify-content: center; }
-  }
-</style>
+    .vcn-inst-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-top: 2px;
+    }
+
+    .vcn-title {
+      font-size: 34px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      min-height: 42px;
+    }
+
+    .vcn-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .vcn-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+    }
+
+    .vcn-req-note {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .vcn-req-note span {
+      color: #fca5a5;
+      font-weight: 600;
+    }
+
+    /* ── Section ── */
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .section-num {
+      width: 26px;
+      height: 26px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    /* ── Grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Fields ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    label .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    input,
+    select {
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--gray-900);
+      background: #fff;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 0 12px;
+      height: 40px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    input.invalid,
+    select.invalid {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    .phone-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .phone-prefix {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      border: 1.5px solid var(--gray-200);
+      border-right: none;
+      border-radius: var(--radius) 0 0 var(--radius);
+      padding: 0 12px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .phone-row input {
+      border-radius: 0 var(--radius) var(--radius) 0;
+      flex: 1;
+    }
+
+    /* ── Address ── */
+    .addr-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+      margin-top: 4px;
+    }
+
+    .addr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .addr-grid:last-child {
+      margin-bottom: 0;
+    }
+
+    .addr-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .addr-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .addr-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      border: 1.5px solid var(--gray-200);
+      border-right: none;
+      border-radius: var(--radius) 0 0 var(--radius);
+      padding: 0 10px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      min-width: 72px;
+    }
+
+    .addr-row input {
+      border-radius: 0 var(--radius) var(--radius) 0;
+      flex: 1;
+    }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 2px;
+      display: none;
+    }
+
+    .field-error.show {
+      display: block;
+    }
+
+    /* ── Submit ── */
+    .submit-bar {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1.25rem 2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .submit-note {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .btn-submit {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0 24px;
+      height: 42px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      animation: pop 0.2s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0.94);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-icon.warn {
+      background: #fef3c7;
+    }
+
+    .modal-icon.warn svg {
+      stroke: #d97706;
+    }
+
+    .modal-icon.success {
+      background: var(--green-light);
+    }
+
+    .modal-icon.success svg {
+      stroke: var(--green);
+    }
+
+    .modal-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--gray-900);
+    }
+
+    .modal p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-fields {
+      margin-bottom: 1.25rem;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 13px;
+    }
+
+    .check-row:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .check-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke-width: 2.5;
+      stroke: var(--green);
+    }
+
+    .check-label {
+      color: var(--gray-700);
+    }
+
+    .check-value {
+      color: var(--gray-900);
+      font-weight: 500;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      border-radius: var(--radius);
+      padding: 0 18px;
+      height: 38px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--gray-200);
+    }
+
+    .btn-confirm {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0 20px;
+      height: 38px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.15s;
+    }
+
+    .btn-confirm:hover {
+      background: #15803d;
+    }
+
+    .btn-confirm svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    @media (max-width: 580px) {
+      body {
+        padding: 1rem 0.75rem;
+      }
+
+      .section-card,
+      .submit-bar {
+        padding: 1.25rem;
+      }
+
+      .vcn-content {
+        padding: 1.75rem 1.25rem;
+      }
+
+      .vcn-title {
+        font-size: 26px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .addr-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: 1;
+      }
+
+      .submit-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-submit {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page-wrap">
+  <div class="page-wrap">
 
-  <!-- Header -->
-  <div class="page-header">
-    <div class="inst-row">
-      <div class="inst-icon">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </div>
-      <div>
-        <div class="inst-name">Student Registration</div>
-        <div class="inst-sub">Vivekananda College of Nursing — Academic Enrollment</div>
-      </div>
-    </div>
-    <h1>New Student Registration</h1>
-    <div class="page-desc">Complete all required fields to submit your enrollment application.</div>
-    <div class="req-note">Fields marked <span>*</span> are required.</div>
-  </div>
-
-  <!-- Section 1: Personal Details -->
-  <div class="section-card">
-    <div class="section-head">
-      <div class="section-num">1</div>
-      <div class="section-title">Personal Details</div>
-    </div>
-    <div class="grid-2">
-      <div class="field full">
-        <label for="fullName">Full Name <span class="req">*</span></label>
-        <input type="text" id="fullName" placeholder="As per 10th documents">
-        <span class="field-error" id="err-fullName">Full name is required.</span>
-      </div>
-      <div class="field">
-        <label for="gender">Gender <span class="req">*</span></label>
-        <select id="gender">
-          <option value="">Select gender</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
-        </select>
-        <span class="field-error" id="err-gender">Please select a gender.</span>
-      </div>
-      <div class="field">
-        <label for="dob">Date of Birth <span class="req">*</span></label>
-        <input type="date" id="dob">
-        <span class="field-error" id="err-dob">Date of birth is required.</span>
-      </div>
-      <div class="field">
-        <label for="category">Category</label>
-        <select id="category">
-          <option value="">Select category</option>
-          <option>General</option>
-          <option>SC</option>
-          <option>ST</option>
-          <option>OBC</option>
-          <option>SEBC/OBC</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="religion">Religion</label>
-        <input type="text" id="religion" placeholder="e.g. Hindu, Muslim, Christian">
-      </div>
-      <div class="field">
-        <label for="bloodGroup">Blood Group</label>
-        <select id="bloodGroup">
-          <option value="">Select blood group</option>
-          <option>A+</option><option>A-</option>
-          <option>B+</option><option>B-</option>
-          <option>AB+</option><option>AB-</option>
-          <option>O+</option><option>O-</option>
-        </select>
-      </div>
-      <div class="field full">
-        <label for="aadhaar">Student Aadhaar Number <span class="req">*</span></label>
-        <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number" maxlength="12" inputmode="numeric">
-        <span class="field-error" id="err-aadhaar">Enter a valid 12-digit Aadhaar number.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 2: Family & Contact -->
-  <div class="section-card">
-    <div class="section-head">
-      <div class="section-num">2</div>
-      <div class="section-title">Family &amp; Contact Details (As per 10th)</div>
-    </div>
-    <div class="grid-2">
-      <div class="field">
-        <label for="fatherName">Father's Name <span class="req">*</span></label>
-        <input type="text" id="fatherName" placeholder="Father's full name">
-        <span class="field-error" id="err-fatherName">Father's name is required.</span>
-      </div>
-      <div class="field">
-        <label for="motherName">Mother's Name <span class="req">*</span></label>
-        <input type="text" id="motherName" placeholder="Mother's full name">
-        <span class="field-error" id="err-motherName">Mother's name is required.</span>
-      </div>
-      <div class="field full">
-        <label for="guardian">Local Guardian's Name</label>
-        <input type="text" id="guardian" placeholder="Guardian's name (if applicable)">
-      </div>
-      <div class="field">
-        <label for="mobileSelf">Mobile (Student) <span class="req">*</span></label>
-        <div class="phone-row">
-          <div class="phone-prefix">+91</div>
-          <input type="tel" id="mobileSelf" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+    <!-- ── Particle Header ── -->
+    <div class="vcn-header">
+      <canvas id="particle-canvas"></canvas>
+      <div class="vcn-content">
+        <div class="vcn-top-row">
+          <div class="vcn-logo-box">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </div>
+          <div>
+            <div class="vcn-inst-name">Vivekananda College of Nursing</div>
+            <div class="vcn-inst-sub">Khandagiri, Bhubaneswar · Academic Enrollment</div>
+          </div>
         </div>
-        <span class="field-error" id="err-mobileSelf">Enter valid 10-digit number.</span>
-      </div>
-      <div class="field">
-        <label for="mobileGuardian">Mobile (Guardian) <span class="req">*</span></label>
-        <div class="phone-row">
-          <div class="phone-prefix">+91</div>
-          <input type="tel" id="mobileGuardian" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+        <div>
+          <div class="vcn-title" id="vcn-title"></div>
+          <div class="vcn-desc">Complete all required fields to submit your enrollment application.</div>
+          <div class="vcn-divider"></div>
+          <div class="vcn-req-note">Fields marked <span>*</span> are required</div>
         </div>
-        <span class="field-error" id="err-mobileGuardian">Enter valid 10-digit number.</span>
       </div>
-      <div class="field">
-        <label for="emergency">Emergency Contact</label>
-        <div class="phone-row">
-          <div class="phone-prefix">+91</div>
-          <input type="tel" id="emergency" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-num">1</div>
+        <div class="section-title">Personal Details</div>
+      </div>
+      <div class="grid-2">
+        <div class="field full">
+          <label for="fullName">Full Name <span class="req">*</span></label>
+          <input type="text" id="fullName" placeholder="As per 10th documents">
+          <span class="field-error" id="err-fullName">Full name is required.</span>
         </div>
-        <span class="field-error" id="err-emergency">Enter valid 10-digit number.</span>
-      </div>
-      <div class="field">
-        <label for="studentEmail">Student Email Address <span class="req">*</span></label>
-        <input type="email" id="studentEmail" placeholder="student@example.com">
-        <span class="field-error" id="err-studentEmail">Enter a valid email address.</span>
-      </div>
-      <div class="field">
-        <label for="parentsEmail">Parents Email Address</label>
-        <input type="email" id="parentsEmail" placeholder="parents@example.com">
-        <span class="field-error" id="err-parentsEmail">Enter a valid email address.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 3: Academic -->
-  <div class="section-card">
-    <div class="section-head">
-      <div class="section-num">3</div>
-      <div class="section-title">Academic Details</div>
-    </div>
-    <div class="grid-2">
-      <div class="field">
-        <label for="program">Program <span class="req">*</span></label>
-        <select id="program">
-          <option value="">Select program</option>
-          <option>B.Sc. Nursing</option>
-          <option>GNM (General Nursing &amp; Midwifery)</option>
-          <option>P.B.B.Sc. Nursing</option>
-          <option>M.Sc. Nursing</option>
-          <option>DMRT</option>
-        </select>
-        <span class="field-error" id="err-program">Please select a program.</span>
-      </div>
-      <div class="field">
-        <label for="programType">Program Type <span class="req">*</span></label>
-        <select id="programType">
-          <option value="">Select type</option>
-          <option>Regular</option>
-          <option>LE</option>
-        </select>
-        <span class="field-error" id="err-programType">Please select program type.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 4: Address -->
-  <div class="section-card">
-    <div class="section-head">
-      <div class="section-num">4</div>
-      <div class="section-title">Address</div>
-    </div>
-
-    <div class="addr-section-title">Permanent Address <span style="color:var(--red)">*</span></div>
-    <div class="addr-grid">
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">At</div><input type="text" id="permAt" placeholder="Village / Town / Area"></div>
-        <span class="field-error" id="err-permAt">Required.</span>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Po</div><input type="text" id="permPo" placeholder="Post Office"></div>
-        <span class="field-error" id="err-permPo">Required.</span>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Ps</div><input type="text" id="permPs" placeholder="Police Station"></div>
-        <span class="field-error" id="err-permPs">Required.</span>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">District</div><input type="text" id="permDistrict" placeholder="District name"></div>
-        <span class="field-error" id="err-permDistrict">Required.</span>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">State</div><input type="text" id="permState" placeholder="State name"></div>
-        <span class="field-error" id="err-permState">Required.</span>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Pin</div><input type="text" id="permPin" placeholder="6-digit PIN" maxlength="6" inputmode="numeric"></div>
-        <span class="field-error" id="err-permPin">Enter valid 6-digit PIN.</span>
+        <div class="field">
+          <label for="gender">Gender <span class="req">*</span></label>
+          <select id="gender">
+            <option value="">Select gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <span class="field-error" id="err-gender">Please select a gender.</span>
+        </div>
+        <div class="field">
+          <label for="dob">Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dob">
+          <span class="field-error" id="err-dob">Date of birth is required.</span>
+        </div>
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">Select category</option>
+            <option>General</option>
+            <option>SC</option>
+            <option>ST</option>
+            <option>OBC</option>
+            <option>SEBC/OBC</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="religion">Religion</label>
+          <input type="text" id="religion" placeholder="e.g. Hindu, Muslim, Christian">
+        </div>
+        <div class="field">
+          <label for="bloodGroup">Blood Group</label>
+          <select id="bloodGroup">
+            <option value="">Select blood group</option>
+            <option>A+</option>
+            <option>A-</option>
+            <option>B+</option>
+            <option>B-</option>
+            <option>AB+</option>
+            <option>AB-</option>
+            <option>O+</option>
+            <option>O-</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="aadhaar">Student Aadhaar Number <span class="req">*</span></label>
+          <input type="text" id="aadhaar" placeholder="12-digit Aadhaar number" maxlength="12" inputmode="numeric">
+          <span class="field-error" id="err-aadhaar">Enter a valid 12-digit Aadhaar number.</span>
+        </div>
       </div>
     </div>
 
-    <div class="addr-section-title">Local Address (if different)</div>
-    <div class="addr-grid">
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">At</div><input type="text" id="localAt" placeholder="Village / Town / Area"></div>
+    <!-- Section 2 -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-num">2</div>
+        <div class="section-title">Family &amp; Contact Details (As per 10th)</div>
       </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Po</div><input type="text" id="localPo" placeholder="Post Office"></div>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Ps</div><input type="text" id="localPs" placeholder="Police Station"></div>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">District</div><input type="text" id="localDistrict" placeholder="District name"></div>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">State</div><input type="text" id="localState" placeholder="State name"></div>
-      </div>
-      <div class="addr-field">
-        <div class="addr-row"><div class="addr-label">Pin</div><input type="text" id="localPin" placeholder="6-digit PIN" maxlength="6" inputmode="numeric"></div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="fatherName">Father's Name <span class="req">*</span></label>
+          <input type="text" id="fatherName" placeholder="Father's full name">
+          <span class="field-error" id="err-fatherName">Father's name is required.</span>
+        </div>
+        <div class="field">
+          <label for="motherName">Mother's Name <span class="req">*</span></label>
+          <input type="text" id="motherName" placeholder="Mother's full name">
+          <span class="field-error" id="err-motherName">Mother's name is required.</span>
+        </div>
+        <div class="field full">
+          <label for="guardian">Local Guardian's Name</label>
+          <input type="text" id="guardian" placeholder="Guardian's name (if applicable)">
+        </div>
+        <div class="field">
+          <label for="mobileSelf">Mobile (Student) <span class="req">*</span></label>
+          <div class="phone-row">
+            <div class="phone-prefix">+91</div><input type="tel" id="mobileSelf" placeholder="10-digit number"
+              maxlength="10" inputmode="numeric">
+          </div>
+          <span class="field-error" id="err-mobileSelf">Enter valid 10-digit number.</span>
+        </div>
+        <div class="field">
+          <label for="mobileGuardian">Mobile (Guardian) <span class="req">*</span></label>
+          <div class="phone-row">
+            <div class="phone-prefix">+91</div><input type="tel" id="mobileGuardian" placeholder="10-digit number"
+              maxlength="10" inputmode="numeric">
+          </div>
+          <span class="field-error" id="err-mobileGuardian">Enter valid 10-digit number.</span>
+        </div>
+        <div class="field">
+          <label for="emergency">Emergency Contact</label>
+          <div class="phone-row">
+            <div class="phone-prefix">+91</div><input type="tel" id="emergency" placeholder="10-digit number"
+              maxlength="10" inputmode="numeric">
+          </div>
+          <span class="field-error" id="err-emergency">Enter valid 10-digit number.</span>
+        </div>
+        <div class="field">
+          <label for="studentEmail">Student Email Address <span class="req">*</span></label>
+          <input type="email" id="studentEmail" placeholder="student@example.com">
+          <span class="field-error" id="err-studentEmail">Enter a valid email address.</span>
+        </div>
+        <div class="field">
+          <label for="parentsEmail">Parents Email Address</label>
+          <input type="email" id="parentsEmail" placeholder="parents@example.com">
+          <span class="field-error" id="err-parentsEmail">Enter a valid email address.</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Submit -->
-  <div class="submit-bar">
-    <div class="submit-note">Data exports to Excel after confirmation.</div>
-    <button class="btn-submit" onclick="handleSubmitClick()">
-      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      Submit Registration
-    </button>
-  </div>
-
-</div>
-
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="confirmModal">
-  <div class="modal">
-    <div class="modal-icon warn">
-      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <!-- Section 3 -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-num">3</div>
+        <div class="section-title">Academic Details</div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="program">Program <span class="req">*</span></label>
+          <select id="program">
+            <option value="">Select program</option>
+            <option>B.Sc. Nursing</option>
+            <option>GNM (General Nursing &amp; Midwifery)</option>
+            <option>P.B.B.Sc. Nursing</option>
+            <option>M.Sc. Nursing</option>
+            <option>DMRT</option>
+          </select>
+          <span class="field-error" id="err-program">Please select a program.</span>
+        </div>
+        <div class="field">
+          <label for="programType">Program Type <span class="req">*</span></label>
+          <select id="programType">
+            <option value="">Select type</option>
+            <option>Regular</option>
+            <option>LE</option>
+          </select>
+          <span class="field-error" id="err-programType">Please select program type.</span>
+        </div>
+      </div>
     </div>
-    <h2>Confirm Submission</h2>
-    <p>Review the details below. Once confirmed, data will be exported to Excel.</p>
-    <div class="modal-fields" id="confirmFields"></div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Go Back &amp; Edit</button>
-      <button class="btn-confirm" onclick="confirmAndExport()">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Confirm &amp; Download Excel
+
+    <!-- Section 4 -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-num">4</div>
+        <div class="section-title">Address</div>
+      </div>
+      <div class="addr-section-title">Permanent Address <span style="color:var(--red)">*</span></div>
+      <div class="addr-grid">
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">At</div><input type="text" id="permAt" placeholder="Village / Town / Area">
+          </div><span class="field-error" id="err-permAt">Required.</span>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Po</div><input type="text" id="permPo" placeholder="Post Office">
+          </div><span class="field-error" id="err-permPo">Required.</span>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Ps</div><input type="text" id="permPs" placeholder="Police Station">
+          </div><span class="field-error" id="err-permPs">Required.</span>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">District</div><input type="text" id="permDistrict" placeholder="District name">
+          </div><span class="field-error" id="err-permDistrict">Required.</span>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">State</div><input type="text" id="permState" placeholder="State name">
+          </div><span class="field-error" id="err-permState">Required.</span>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Pin</div><input type="text" id="permPin" placeholder="6-digit PIN" maxlength="6"
+              inputmode="numeric">
+          </div><span class="field-error" id="err-permPin">Enter valid 6-digit PIN.</span>
+        </div>
+      </div>
+      <div class="addr-section-title">Local Address (if different)</div>
+      <div class="addr-grid">
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">At</div><input type="text" id="localAt" placeholder="Village / Town / Area">
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Po</div><input type="text" id="localPo" placeholder="Post Office">
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Ps</div><input type="text" id="localPs" placeholder="Police Station">
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">District</div><input type="text" id="localDistrict" placeholder="District name">
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">State</div><input type="text" id="localState" placeholder="State name">
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="addr-row">
+            <div class="addr-label">Pin</div><input type="text" id="localPin" placeholder="6-digit PIN" maxlength="6"
+              inputmode="numeric">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-bar">
+      <div class="submit-note">Made with ❤️ by CouragE &#x00A9; 2026</div>
+      <button class="btn-submit" onclick="handleSubmitClick()">
+        <svg viewBox="0 0 24 24">
+          <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        Submit Registration
       </button>
     </div>
-  </div>
-</div>
 
-<!-- Success Modal -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal">
-    <div class="modal-icon success">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <h2 style="color:#16a34a">Registration Submitted!</h2>
-    <p>Data exported to <strong>student_registrations.xlsx</strong> in your Downloads folder.</p>
-    <div class="modal-btns">
-      <button class="btn-confirm" onclick="closeSuccess()" style="background:var(--blue)">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Register Another Student
-      </button>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+      <div class="modal-icon warn"><svg viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg></div>
+      <h2>Confirm Submission</h2>
+      <p>Review the details below. Once confirmed, data will be saved.</p>
+      <div class="modal-fields" id="confirmFields"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">Go Back &amp; Edit</button>
+        <button class="btn-confirm" id="confirmBtn" onclick="confirmAndExport()">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Confirm &amp; Submit
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="registration.js"></script>
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-icon success"><svg viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12" />
+        </svg></div>
+      <h2 style="color:#16a34a">Registration Submitted!</h2>
+      <p>Data has been saved successfully. Thank you!</p>
+      <div class="modal-btns">
+        <button class="btn-confirm" onclick="closeSuccess()" style="background:var(--blue)">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Register Another Student
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particle + Typewriter Script -->
+  <script>
+    (function () {
+      var title = document.getElementById('vcn-title');
+      var text = 'New Student Registration';
+      var i = 0;
+      function type() {
+        if (i <= text.length) {
+          title.textContent = text.slice(0, i) + (i < text.length ? '|' : '');
+          i++;
+          setTimeout(type, i === 1 ? 300 : 55);
+        }
+      }
+      setTimeout(type, 200);
+
+      var canvas = document.getElementById('particle-canvas');
+      var ctx = canvas.getContext('2d');
+      var particles = [];
+      var COLORS = ['rgba(147,197,253,', 'rgba(196,181,253,', 'rgba(255,255,255,'];
+
+      function resize() {
+        canvas.width = canvas.offsetWidth || 760;
+        canvas.height = canvas.offsetHeight || 220;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      for (var k = 0; k < 110; k++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 2.2 + 0.5,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          a: Math.random() * 0.7 + 0.2,
+          da: (Math.random() - 0.5) * 0.004,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)]
+        });
+      }
+
+      function draw() {
+        var w = canvas.width, h = canvas.height;
+        ctx.fillStyle = '#06082a';
+        ctx.fillRect(0, 0, w, h);
+
+        var grd = ctx.createRadialGradient(w * 0.6, h * 0.4, 0, w * 0.6, h * 0.4, w * 0.55);
+        grd.addColorStop(0, 'rgba(37,99,235,0.18)');
+        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+
+        for (var i = 0; i < particles.length; i++) {
+          for (var j = i + 1; j < particles.length; j++) {
+            var dx = particles[i].x - particles[j].x;
+            var dy = particles[i].y - particles[j].y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 80) {
+              ctx.beginPath();
+              ctx.strokeStyle = 'rgba(147,197,253,' + (0.08 * (1 - dist / 80)) + ')';
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        particles.forEach(function (p) {
+          p.x += p.vx; p.y += p.vy; p.a += p.da;
+          if (p.a > 0.9 || p.a < 0.1) p.da *= -1;
+          if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + p.a + ')';
+          ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+  </script>
+
+  <script src="registration.js"></script>
 </body>
+
 </html>
