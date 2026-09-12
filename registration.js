@@ -1,5 +1,5 @@
 // GOOGLE APPS SCRIPT URL ───
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTWk_9MrYPB-EXf_OQ0ip-mS25E5q8k5jNSNybQzNXalKF9zbDLaRUg6V6ZYurkTpx/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj-x231ZNQnYaXi5Ju9LmMA11fUnC8UXfpMZv0XD-qYHvIpx3WorFL-5sRfqVcaDRe/exec';
 
 var uppercaseIds = [
   'fullName','fatherName','motherName','guardian','religion',
